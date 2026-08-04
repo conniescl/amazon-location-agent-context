@@ -29,6 +29,9 @@ Do NOT use this skill for:
 - Suggest: Predict places and points of interest based on partial or misspelled user input
 - Get Place: Retrieve place details by place ID
 
+**Jobs** (SDK: location, JS: @aws-sdk/client-location)
+- Address Validation: Verify and standardize addresses in bulk with the asynchronous Jobs API (StartJob with Action `ValidateAddress`, then GetJob/ListJobs/CancelJob). This is a different task from Geocode — it returns a postal-validation verdict (match confidence, per-component status), not just coordinates.
+
 **Maps** (SDK: geo-maps, JS: @aws-sdk/client-geo-maps)  
 - Dynamic Maps: Interactive maps using tiles with [MapLibre](https://maplibre.org/) rendering
 - Static Maps: Pre-rendered, non-interactive map images, good for including an image into a web page, or for thumbnail images
@@ -81,10 +84,15 @@ Override: User can specify "use Cognito for Maps/Places/Routes" or "use bundled 
 
 Choose the right API for your use case:
 
-### Address Input & Validation
+### Address Input (interactive forms)
 - **Autocomplete** → Type-ahead in address forms (partial input: "123 Main")
 - **GetPlace** → Get full details after user selects autocomplete result (by PlaceId)
-- **Geocode** → Validate complete user-typed address or convert address to coordinates
+- **Geocode** → Resolve a complete user-typed address to coordinates (returns coordinates and a matched label; it does NOT return a postal-validation verdict)
+
+### Address Validation (verify & standardize)
+- **StartJob (Action `ValidateAddress`)** → Verify and standardize addresses in bulk against authoritative postal data; async Jobs API with Parquet input/output in Amazon S3
+- **GetJob / ListJobs / CancelJob** → Track, enumerate, and cancel validation jobs
+- Do NOT use Geocode for address validation — geocoding returns coordinates, not a validation verdict (match confidence, granularity, per-component status). See the address-verification reference.
 
 ### Finding Locations
 - **SearchText** → General text search ("pizza near Seattle")

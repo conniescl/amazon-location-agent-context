@@ -255,9 +255,7 @@ map.addLayer({
 
 ```javascript
 const response = await client.send(
-  new BatchUpdateDevicePositionCommand({
-    /* ... */
-  }),
+  new BatchUpdateDevicePositionCommand({/* ... */}),
 );
 
 if (response.Errors?.length > 0) {

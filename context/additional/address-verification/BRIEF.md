@@ -1,3 +1,3 @@
 name: Address Verification
-tags: address form, address input, address verification, address validation, geocoding
-description: Validate addresses input from users before taking actions or persisting to databases
+tags: address verification, address validation, address standardization, bulk address validation, Jobs API, StartJob, ValidateAddress, GetJob, data cleansing
+description: Verify and standardize addresses in bulk against authoritative postal data using the asynchronous Jobs API (StartJob with Action ValidateAddress), before persisting to databases or taking downstream actions
