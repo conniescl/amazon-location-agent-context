@@ -53,7 +53,7 @@ Do NOT use this skill for:
 - Get Place: Retrieve place details by place ID
 
 **Jobs** (SDK: location, JS: @aws-sdk/client-location)
-- Address Validation: Verify and standardize addresses in bulk with the asynchronous Jobs API (StartJob with Action `ValidateAddress`, then GetJob/ListJobs/CancelJob). This is a different task from Geocode — it returns a postal-validation verdict (match confidence, per-component status), not just coordinates.
+- Address Validation: Verify and standardize addresses in bulk with the asynchronous Jobs API (StartJob with Action `ValidateAddress`, then GetJob/ListJobs/CancelJob). It adds what Geocode lacks — a postal-authority verdict (ValidationGranularity, Mailable/Locatable, per-component StatusDetail), not just coordinates. Coverage is US, CA, UK, and AU only; for other countries use Geocode.
 
 **Maps** (SDK: geo-maps, JS: @aws-sdk/client-geo-maps)  
 - Dynamic Maps: Interactive maps using tiles with [MapLibre](https://maplibre.org/) rendering
@@ -110,12 +110,12 @@ Choose the right API for your use case:
 ### Address Input (interactive forms)
 - **Autocomplete** → Type-ahead in address forms (partial input: "123 Main")
 - **GetPlace** → Get full details after user selects autocomplete result (by PlaceId)
-- **Geocode** → Resolve a complete user-typed address to coordinates (returns coordinates and a matched label; it does NOT return a postal-validation verdict)
+- **Geocode** → Resolve a complete user-typed address to coordinates. Returns coordinates, a matched label, and match quality (`MatchScores` overall + per-component, `AddressNumberCorrected`) synchronously in one call — but no postal-deliverability verdict or standardized output.
 
 ### Address Validation (verify & standardize)
-- **StartJob (Action `ValidateAddress`)** → Verify and standardize addresses in bulk against authoritative postal data; async Jobs API with Parquet input/output in Amazon S3
+- **StartJob (Action `ValidateAddress`)** → Verify and standardize addresses in bulk against authoritative postal data; async Jobs API with Parquet input/output in Amazon S3. **Coverage: US, CA, UK, AU only; for other countries use Geocode.**
 - **GetJob / ListJobs / CancelJob** → Track, enumerate, and cancel validation jobs
-- Do NOT use Geocode for address validation — geocoding returns coordinates, not a validation verdict (match confidence, granularity, per-component status). See the address-verification reference.
+- Choose the Jobs API when you need a postal-authority verdict (ValidationGranularity, Mailable/Locatable, per-component StatusDetail) or bulk throughput. For a single ad-hoc check of whether one address resolves and how well it matched, the synchronous Geocode `MatchScores` is the right tool — do not stand up a job. See the address-verification reference.
 
 ### Finding Locations
 - **SearchText** → General text search ("pizza near Seattle")

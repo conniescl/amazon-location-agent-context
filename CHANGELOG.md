@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐞 Bug fixes
 
-- Corrected address validation guidance to use the asynchronous Jobs API (`StartJob` with Action `ValidateAddress`, plus `GetJob`/`ListJobs`/`CancelJob`) instead of Geocode. Rewrote the Address Verification reference, relabeled the Geocode step in the Address Input reference as address-to-coordinates resolution (not validation), and updated the core API selection guidance so geocoding is no longer conflated with address validation.
+- _...Add new stuff here..._
 
 ### 🧩 Architectural changes
 
