@@ -34,6 +34,9 @@ Do NOT use this skill for:
 - Suggest: Predict places and points of interest based on partial or misspelled user input
 - Get Place: Retrieve place details by place ID
 
+**Jobs** (SDK: location, JS: @aws-sdk/client-location)
+- Address Validation: Verify and standardize addresses in bulk with the asynchronous Jobs API (StartJob with Action `ValidateAddress`, then GetJob/ListJobs/CancelJob). It adds what Geocode lacks — a postal-authority verdict (ValidationGranularity, Mailable/Locatable, per-component StatusDetail), not just coordinates. Coverage is US, CA, UK, and AU only; for other countries use Geocode.
+
 **Maps** (SDK: geo-maps, JS: @aws-sdk/client-geo-maps)  
 - Dynamic Maps: Interactive maps using tiles with [MapLibre](https://maplibre.org/) rendering
 - Static Maps: Pre-rendered, non-interactive map images, good for including an image into a web page, or for thumbnail images
@@ -86,10 +89,15 @@ Override: User can specify "use Cognito for Maps/Places/Routes" or "use bundled 
 
 Choose the right API for your use case:
 
-### Address Input & Validation
+### Address Input (interactive forms)
 - **Autocomplete** → Type-ahead in address forms (partial input: "123 Main")
 - **GetPlace** → Get full details after user selects autocomplete result (by PlaceId)
-- **Geocode** → Validate complete user-typed address or convert address to coordinates
+- **Geocode** → Resolve a complete user-typed address to coordinates. Returns coordinates, a matched label, and match quality (`MatchScores` overall + per-component, `AddressNumberCorrected`) synchronously in one call — but no postal-deliverability verdict or standardized output.
+
+### Address Validation (verify & standardize)
+- **StartJob (Action `ValidateAddress`)** → Verify and standardize addresses in bulk against authoritative postal data; async Jobs API with Parquet input/output in Amazon S3. **Coverage: US, CA, UK, AU only; for other countries use Geocode.**
+- **GetJob / ListJobs / CancelJob** → Track, enumerate, and cancel validation jobs
+- Choose the Jobs API when you need a postal-authority verdict (ValidationGranularity, Mailable/Locatable, per-component StatusDetail) or bulk throughput. For a single ad-hoc check of whether one address resolves and how well it matched, the synchronous Geocode `MatchScores` is the right tool — do not stand up a job. See the address-verification reference.
 
 ### Finding Locations
 - **SearchText** → General text search ("pizza near Seattle")
@@ -223,7 +231,7 @@ Integrates with the [AWS MCP Server](https://docs.aws.amazon.com/aws-mcp/latest/
 Load these resources as needed for specific implementation guidance:
 
 - [Address Input](./references/address-input.md) - Create effective address input forms for users with address type ahead completion improving input speed and accuracy
-- [Address Verification](./references/address-verification.md) - Validate addresses input from users before taking actions or persisting to databases
+- [Address Verification](./references/address-verification.md) - Verify and standardize addresses in bulk against authoritative postal data using the asynchronous Jobs API (StartJob with Action ValidateAddress), before persisting to databases or taking downstream actions
 - [Calculate Routes](./references/calculate-routes.md) - Calculate routes between locations with customizable travel options and display them on maps
 - [Device Tracking](./references/device-tracking.md) - Track device locations in real time and query position history
 - [Dynamic Map Rendering](./references/dynamic-map.md) - Render dynamic maps with MapLibre

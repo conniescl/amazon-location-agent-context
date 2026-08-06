@@ -294,11 +294,7 @@ response.ForecastedEvents.forEach((event) => {
 `BatchPutGeofence` and `BatchEvaluateGeofences` return partial success — some entries MAY succeed while others fail. Always check the `Errors` array in the response:
 
 ```javascript
-const response = await client.send(
-  new BatchPutGeofenceCommand({
-    /* ... */
-  }),
-);
+const response = await client.send(new BatchPutGeofenceCommand({/* ... */}));
 
 if (response.Errors?.length > 0) {
   response.Errors.forEach((error) => {
